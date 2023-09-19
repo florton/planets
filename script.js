@@ -158,7 +158,7 @@ function render() {
   // camera.layers.set(0);
   // renderer.render(scene, camera);
   
-  requestAnimationFrame(render);
+  // requestAnimationFrame(render);
 }
 
 // controls
@@ -173,3 +173,4 @@ controls.maxDistance = 5000
 controls.maxPolarAngle = Math.PI
 
 render()
+setTimeout(render, 100)
