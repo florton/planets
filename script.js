@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { UnrealBloomPass } from "/node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { EffectComposer } from "/node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+// import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+// import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 //Scene
 const scene = new THREE.Scene()
@@ -13,19 +13,18 @@ const scene = new THREE.Scene()
 const planets = {}
 const bloomObjs = []
 
-const addPlanet = (name, color, radius, x, y, z, bloom = false) => {
+const addPlanet = (name, color, radius, x, y, z, bloomColor = "", bloomLevel = 0.25) => {
   //Create our sphere
   // const geometry = new THREE.SphereGeometry(radius, 64, 64)
   const geometry = new THREE.IcosahedronGeometry(radius, 15);
   let material = null
-  if (bloom) {
-    material = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.5, emissive:"orange", emissiveIntensity:2.5, toneMapped:false})
+  if (bloomColor !== "") {
+    material = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.5, emissive: bloomColor, emissiveIntensity:bloomLevel, toneMapped:false})
   } else {
     const moonTexture = new THREE.TextureLoader().load('moon.jpg');
     const normalTexture = new THREE.TextureLoader().load('normal.jpg');
-    material = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.5, map: moonTexture, normalMap: normalTexture})
+    material = new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0.5, map: moonTexture, normalMap: normalTexture})
   }
-
 
   // material = new THREE.MeshStandardMaterial({ color: "red" })
   const mesh = new THREE.Mesh(geometry, material)
@@ -36,16 +35,29 @@ const addPlanet = (name, color, radius, x, y, z, bloom = false) => {
 }
 
 //Planets
-const sun = addPlanet("sun","#ffff66", 4, 0, 0, 0, true)
+const sun = addPlanet("sun","#ffffff", 4, 0, 0, 0, "orange", 2.5)
 // sun.layers.set(1)
 bloomObjs.push(sun)
 
 // const fakesun = addPlanet("sun","#FDB813", 4, 0, 0, 0, true)
 // fakesun.layers.set(2)
 
-addPlanet("green","#00ff83", 3, 30, 10, 10)
-addPlanet("red","#880033", 2.5, 45, 20, 20)
-addPlanet("blue","#220099", 5, 60, 40, 40)
+addPlanet("green","#00ff83", 4, 30, 10, 10)
+addPlanet("red","#880033", 2.5, -45, 20, -20)
+addPlanet("x3","#236543", 0.5, 45, 20, 25)
+addPlanet("x4","#32563", 0.5, 46, 19, 24)
+addPlanet("blue","#220099", 5, 60, -40, 40)
+addPlanet("x","#423942", 1.5, 60, 45, -45)
+addPlanet("x2","#00ee33", 3, -50, 30, 40)
+addPlanet("x5","#880033", 10, -80, 30, 80)
+
+for (let i = 0; i < 300; i++){
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread ( 1000 ) );
+  // console.log(x, y, z)
+  const r = THREE.MathUtils.randFloatSpread ( 3 )
+  addPlanet("i" + i,"#ffffff", r, x, y, z, "white")
+}
+
 
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 10, 0, 0.1); 
@@ -148,7 +160,6 @@ function render() {
   
   requestAnimationFrame(render);
 }
-
 
 // controls
 const controls = new OrbitControls( camera, renderer.domElement )
