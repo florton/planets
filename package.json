@@ -10,10 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@react-three/postprocessing": "^2.15.1",
-    "install": "^0.13.0",
-    "npm": "^10.1.0",
-    "three": "^0.156.1"
   },
   "devDependencies": {
     "vite": "^4.4.9"
