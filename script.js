@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-// import { BloomEffect, SelectiveBloomEffect, EffectComposer, EffectPass, RenderPass, BlendFunction, FXAAEffect } from "postprocessing";
 import { UnrealBloomPass } from "/node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { EffectComposer } from "/node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -35,12 +34,9 @@ const addPlanet = (name, color, radius, x, y, z, bloomColor = "", bloomLevel = 0
 }
 
 //Planets
-const sun = addPlanet("sun","#ffffff", 4, 0, 0, 0, "orange", 2.5)
+const sun = addPlanet("sun","#ffffff", 8, 0, 0, 0, "orange", 2.5)
 // sun.layers.set(1)
 bloomObjs.push(sun)
-
-// const fakesun = addPlanet("sun","#FDB813", 4, 0, 0, 0, true)
-// fakesun.layers.set(2)
 
 addPlanet("green","#00ff83", 4, 30, 10, 10)
 addPlanet("red","#880033", 2.5, -45, 20, -20)
@@ -58,7 +54,6 @@ for (let i = 0; i < 300; i++){
   addPlanet("i" + i,"#ffffff", r, x, y, z, "white")
 }
 
-
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 10, 0, 0.1); 
 scene.add(pointLight);
@@ -69,16 +64,11 @@ const ambientLightSun = new THREE.AmbientLight(0xffffff, 1);
 // ambientLightSun.layers.set(1)
 scene.add(ambientLightSun)
 
-// const ambientFakeLightSun = new THREE.AmbientLight(0xffffff, 10);
-// bloomObjs.push(ambientFakeLightSun)
-// scene.add(ambientFakeLightSun)
-
 
 //Camera
 const camera = new THREE.PerspectiveCamera (45, 800 / 600)
 camera.position.z = 100
 // camera.layers.enable(1);
-// camera.layers.enable(2);
 
 //Renderer
 const canvas = document.querySelector(".webgl")
@@ -93,72 +83,19 @@ camera.updateProjectionMatrix()
 //bloom renderer
 const renderScene = new RenderPass(scene, camera)
 
-// const selectiveBloom = new SelectiveBloomEffect(scene, camera, {
-//   blendFunction: BlendFunction.AVERAGE,
-//   intensity:10,
-//   luminanceThreshold: 0.0001,
-//   luminanceSmoothing: 0.1,
-//   mipmapBlur: true,
-//   radius: 0.4,
-//   levels: 5,
-// })
-// selectiveBloom.selection = bloomObjs
-// console.log(bloomObjs)
-// const selBloomPass = new EffectPass(camera, selectiveBloom )
-
-// const fxaaPass = new EffectPass(camera, new FXAAEffect())
-
-// const composer = new EffectComposer(renderer)
-// composer.addPass(renderScene)
-// composer.addPass(selBloomPass)
-// composer.addPass(bloomPass)
-// composer.addPass(fxaaPass)
-
 const unrealBloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),1.5,1,1
 )
-
-// const bloomComposer = new EffectComposer( renderer );
-// bloomComposer.renderToScreen = false;
-// bloomComposer.addPass( renderScene );
-// bloomComposer.addPass( unrealBloomPass );
-
-// const mixPass = new ShaderPass(
-//   new THREE.ShaderMaterial( {
-//     uniforms: {
-//       baseTexture: { value: null },
-//       bloomTexture: { value: bloomComposer.renderTarget2.texture }
-//     },
-//     // vertexShader: document.getElementById( 'vertexshader' ).textContent,
-//     // fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-//     defines: {}
-//   } ), 'baseTexture'
-// );
-// mixPass.needsSwap = true;
-
-// const outputPass = new OutputPass();
 
 const unrealComposer = new EffectComposer(renderer)
 unrealComposer.setSize(window.innerWidth, window.innerHeight)
 // unrealComposer.renderToScreen = true
 unrealComposer.addPass(renderScene)
 unrealComposer.addPass(unrealBloomPass)
-// unrealComposer.addPass(mixPass)
-// unrealComposer.addPass(outputPass)
-
 
 function render() {
   renderer.clear();
   unrealComposer.render()
-  
-  // camera.layers.set(0);
-  // composer.render();
-  
-  // renderer.clearDepth();
-  // camera.layers.set(0);
-  // renderer.render(scene, camera);
-  
-  // requestAnimationFrame(render);
 }
 
 // controls
@@ -173,4 +110,4 @@ controls.maxDistance = 5000
 controls.maxPolarAngle = Math.PI
 
 render()
-setTimeout(render, 100)
+setTimeout(render, 50)
