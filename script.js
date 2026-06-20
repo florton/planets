@@ -109,5 +109,5 @@ controls.minDistance = 10
 controls.maxDistance = 5000
 controls.maxPolarAngle = Math.PI
 
-render()
-setTimeout(render, 50)
+// render()
+setTimeout(render, 500)
